@@ -22,15 +22,15 @@ interface NovelCellProps {
   title: string;
 }
 
-const NovelCell = cell<{ novel: Novel }, NovelCellProps>({
-  query: gql`
-  query($title: String) {
-    novel(title: $title) {
-      title
-      description
-    }
-  }`,
+const QUERY = gql`
+query($title: String) {
+  novel(title: $title) {
+    title
+    description
+  }
+}`;
 
+const NovelCell = cell<{ novel: Novel }, NovelCellProps>(QUERY, {
   Success({ novel: Novel }) {
     return (
       <div>

@@ -3,7 +3,6 @@ import { DocumentNode } from 'graphql';
 import { useQuery, ApolloError, QueryResult } from '@apollo/client';
 
 interface CellDefinition<T, P> {
-  query: DocumentNode;
   Empty?: React.FC<P & QueryRest<T>>;
   Loading?: React.FC<P & QueryRest<T>>;
   Failure?: React.FC<P & QueryRest<T> & { error: ApolloError }>;
@@ -17,8 +16,7 @@ function isEmpty<T>(data: T) {
 
 type QueryRest<T> = Omit<QueryResult<T>, 'error'|'loading'|'data'>;
 
-export default function createCell<T, P = {}>({
-  query,
+export default function createCell<T, P = {}>(query: DocumentNode, {
   Success,
   Empty = () => null,
   Loading = () => null,
