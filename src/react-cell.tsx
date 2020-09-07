@@ -1,62 +1,50 @@
-// Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
-  // import "core-js/fn/array.find"
-  // ...
-
 import React from 'react';
+import { DocumentNode } from 'graphql';
+import { useQuery, ApolloError, QueryResult } from '@apollo/client';
 
-interface CellDefinition<R, T, E> {
-  query: (props: T) => Promise<R>;
-
-  empty?: React.FC;
-  loading?: React.FC;
-  failure?: React.FC<T & { error: E }>;
-  success: React.FC<T & R>;
+interface CellDefinition<T, P> {
+  query: DocumentNode;
+  Empty?: React.FC<P & QueryRest<T>>;
+  Loading?: React.FC<P & QueryRest<T>>;
+  Failure?: React.FC<P & QueryRest<T> & { error: ApolloError }>;
+  Success: React.FC<P & T & QueryRest<T>>;
 }
 
-enum CellState {
-  Loading,
+function isEmpty<T>(data: T) {
+  const field = (data as any)[Object.keys(data as any)[0]];
+  return (field == null) || (Array.isArray(field) && field.length == 0);
+}
+
+type QueryRest<T> = Omit<QueryResult<T>, 'error'|'loading'|'data'>;
+
+export default function createCell<T, P = {}>({
+  query,
   Success,
-  Failure,
-}
+  Empty = () => null,
+  Loading = () => null,
+  Failure = ({ error }) => {
+    console.error(error);
+    return null;
+  }
+}: CellDefinition<T, P>): React.FC<P> {
+  return (props: P) => {
 
-export default function createCell<R, T = {}, E = unknown>(cell: CellDefinition<R, T, E>): React.FC<T> {
-  const Empty = cell.empty || (() => null);
-  const Loading = cell.loading || (() => null);
-  const Failure = cell.failure || (() => null);
+    const { error, loading, data, ...rest } = useQuery<T>(query, {
+      variables: props
+    });
 
-  return (props: T) => {
-    const [result, setResult] = React.useState<R|null>(null);
-    const [failure, setFailure] = React.useState<E|null>(null);
-    const [cellState, setCellState] = React.useState(CellState.Loading);
-
-    React.useEffect(() => {
-      async function fn() {
-        try {
-          setResult(await cell.query(props));
-          setCellState(CellState.Success)
-        } catch(e) {
-          if (cell.failure == undefined) {
-            console.error(e);
-          }
-          setFailure(e as any)
-          setCellState(CellState.Failure)
-        }
-      }
-
-      fn();
-    }, [props]);
-
-    if (result == null && (cellState != CellState.Loading)) {
-      return <Empty />
+    if (error) {
+      return <Failure error={error} {...props} {...rest} />;
     }
 
-    switch(cellState) {
-      case CellState.Loading:
-        return <Loading />;
-      case CellState.Success:
-        return <cell.success {...Object.assign(props, result!)} />;
-      case CellState.Failure:
-        return <Failure {...Object.assign(props, { error: failure! })} />
+    if (loading) {
+      return <Loading {...props} {...rest} />;
     }
+
+    if (data == undefined || isEmpty(data)) {
+      return <Empty {...props} {...rest} />;
+    }
+
+    return <Success {...data} {...props} {...rest} />
   };
 }

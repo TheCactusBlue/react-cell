@@ -1,6 +1,6 @@
 # react-cell
 
-Inspired by [Redwood Cells](https://redwoodjs.com/tutorial/cells).
+Inspired by [Redwood Cells](https://redwoodjs.com/tutorial/cells), using Apollo Client.
 
 ## Getting started
 
@@ -16,13 +16,22 @@ yarn add react-cell
 
 ```tsx
 import cell from 'react-cell';
+import { gql } from '@apollo/client';
 
-const NovelCell = cell({
-  async query({ title: string }) {
-    return { novel: await getNovelByTitle(title) };
-  },
+interface NovelCellProps {
+  title: string;
+}
 
-  success({ novel: Novel }) {
+const NovelCell = cell<{ novel: Novel }, NovelCellProps>({
+  query: gql`
+  query($title: String) {
+    novel(title: $title) {
+      title
+      description
+    }
+  }`,
+
+  Success({ novel: Novel }) {
     return (
       <div>
         <h1>{novel.title}</h1>
@@ -31,21 +40,21 @@ const NovelCell = cell({
     );
   },
 
-  loading() {
+  Loading() {
     return (
       <div>Loading...</div>
     ); 
   },
 
-  empty() {
+  Empty() {
     return (
-      <div>Found nothing...</div>
+      <div>Found nothing.</div>
     ); 
   },
 
-  failure({ error: string }) {
+  Failure({ error }) {
     return (
-      <div>Error: {error}</div>
+      <div>Error: {error.message}</div>
     ); 
   }
 });
