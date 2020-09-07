@@ -1,6 +1,6 @@
 # react-cell
 
-Inspired by [Redwood Cells](https://redwoodjs.com/tutorial/cell).
+Inspired by [Redwood Cells](https://redwoodjs.com/tutorial/cells).
 
 ## Getting started
 
@@ -9,9 +9,10 @@ yarn add react-cell
 ```
 
 ## Features
+
 - First-class TypeScript support
 
-## Example
+## Usage
 
 ```tsx
 import cell from 'react-cell';
