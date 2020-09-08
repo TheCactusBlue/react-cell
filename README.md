@@ -1,6 +1,10 @@
 # react-cell
 
-Inspired by [Redwood Cells](https://redwoodjs.com/tutorial/cells), using Apollo Client.
+[![npm](https://img.shields.io/npm/v/react-cell.svg?color=brightgreen)](https://www.npmjs.com/package/react-cell)
+[![bundlephobia](https://img.shields.io/bundlephobia/minzip/react-cell.svg?style=flat&label=size)](https://bundlephobia.com/result?p=react-cell)
+![Misaka](https://img.shields.io/badge/Best%20Girl-⚡Misaka%20Mikoto-%23ff8000)
+
+🔋 Declarative React Components that fetch GraphQL. Inspired by [Redwood Cells](https://redwoodjs.com/tutorial/cells), using Apollo Client.
 
 ## Getting started
 
@@ -10,7 +14,10 @@ yarn add react-cell
 
 ## Features
 
-- First-class TypeScript support
+- 🍱 Structured declaration for components
+- 📘 First-class TypeScript support
+- 🚀 Apollo-based GraphQL queries
+- ⚡ Only peer dependencies
 
 ## Usage
 
@@ -30,8 +37,9 @@ query($title: String) {
   }
 }`;
 
+// props are passed onto the query as variables
 const NovelCell = cell<{ novel: Novel }, NovelCellProps>(QUERY, {
-  Success({ novel: Novel }) {
+  Success({ novel }) {
     return (
       <div>
         <h1>{novel.title}</h1>
@@ -40,23 +48,17 @@ const NovelCell = cell<{ novel: Novel }, NovelCellProps>(QUERY, {
     );
   },
 
-  Loading() {
-    return (
-      <div>Loading...</div>
-    ); 
-  },
+  // While your query is executing.
+  Loading: () =>
+    <div>Loading...</div>,
 
-  Empty() {
-    return (
-      <div>Found nothing.</div>
-    ); 
-  },
+  // Renders if your query results in null or an empty array.
+  Empty: () =>
+    <div>Found nothing.</div>,
 
-  Failure({ error }) {
-    return (
-      <div>Error: {error.message}</div>
-    ); 
-  }
+  // This renders if your query results in an error.
+  Failure: ({ error }) =>
+    <div>Error: {error.message}</div>
 });
 
 <NovelCell title="Title here">
