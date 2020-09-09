@@ -1,8 +1,8 @@
 # react-cell
 
-[![npm](https://img.shields.io/npm/v/react-cell.svg?color=brightgreen)](https://www.npmjs.com/package/react-cell)
-[![bundlephobia](https://img.shields.io/bundlephobia/minzip/react-cell.svg?style=flat&label=size)](https://bundlephobia.com/result?p=react-cell)
-![Misaka](https://img.shields.io/badge/Best%20Girl-⚡Misaka%20Mikoto-%23ff8000)
+[![npm](https://img.shields.io/npm/v/react-cell.svg?style=for-the-badge&color=brightgreen)](https://www.npmjs.com/package/react-cell)
+[![bundlephobia](https://img.shields.io/bundlephobia/minzip/react-cell.svg?style=for-the-badge&label=size)](https://bundlephobia.com/result?p=react-cell)
+![Misaka](https://img.shields.io/badge/Best%20Girl-⚡Misaka%20Mikoto-%23ff8000?style=for-the-badge)
 
 🔋 Declarative React Components that fetch GraphQL. Inspired by [Redwood Cells](https://redwoodjs.com/tutorial/cells), using Apollo Client.
 
